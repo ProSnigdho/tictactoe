@@ -3,28 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
+    <title>Dynamic Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Dynamic Tic Tac Toe</h1>
+        <div class="header">
+            <span class="player" id="playerX">X</span>
+            <span class="turn-indicator" id="turnIndicator">TURN</span>
+            <span class="player" id="playerO">O</span>
+        </div>
+        
+        <div class="board" id="board">
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+        </div>
 
-<div class="container">
-    <h1>Tic Tac Toe</h1>
-    <div class="board" id="board">
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
+        <div class="scores">
+            <div class="score" id="scoreX">Player X <span>0</span></div>
+            <div class="score" id="scoreO">Player O <span>0</span></div>
+        </div>
+
+        <button id="restartButton">Restart Game</button>
     </div>
-    <button id="restartButton">Restart Game</button>
-    <p id="message"></p>
-</div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
