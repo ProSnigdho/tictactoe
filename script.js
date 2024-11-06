@@ -1,9 +1,16 @@
 const cells = document.querySelectorAll("[data-cell]");
 const board = document.getElementById("board");
 const restartButton = document.getElementById("restartButton");
-const messageElement = document.getElementById("message");
+const turnIndicator = document.getElementById("turnIndicator");
+const scoreXElement = document.querySelector("#scoreX span");
+const scoreOElement = document.querySelector("#scoreO span");
 
 let currentPlayer = "X";
+let scoreX = 0;
+let scoreO = 0;
+let moveHistoryX = []; // Stores moves for X
+let moveHistoryO = []; // Stores moves for O
+
 const winningCombinations = [
     [0, 1, 2],
     [3, 4, 5],
@@ -17,43 +24,59 @@ const winningCombinations = [
 
 function startGame() {
     cells.forEach(cell => {
-        cell.classList.remove("X");
-        cell.classList.remove("O");
+        cell.classList.remove("X", "O");
         cell.textContent = "";
-        cell.addEventListener("click", handleClick, { once: true });
+        cell.addEventListener("click", handleClick);
     });
-    setBoardHoverClass();
-    messageElement.textContent = "Player X's turn";
+    moveHistoryX = [];
+    moveHistoryO = [];
     currentPlayer = "X";
+    updateTurnIndicator();
 }
 
 function handleClick(e) {
     const cell = e.target;
+
+    // Remove the oldest move if the current player has already made 4 moves
+    if (currentPlayer === "X" && moveHistoryX.length === 4) {
+        const oldestMove = moveHistoryX.shift();
+        oldestMove.classList.remove("X");
+        oldestMove.textContent = "";
+        oldestMove.addEventListener("click", handleClick);
+    } else if (currentPlayer === "O" && moveHistoryO.length === 4) {
+        const oldestMove = moveHistoryO.shift();
+        oldestMove.classList.remove("O");
+        oldestMove.textContent = "";
+        oldestMove.addEventListener("click", handleClick);
+    }
+
     placeMark(cell, currentPlayer);
+    if (currentPlayer === "X") {
+        moveHistoryX.push(cell);
+    } else {
+        moveHistoryO.push(cell);
+    }
+
     if (checkWin(currentPlayer)) {
         endGame(false);
-    } else if (isDraw()) {
-        endGame(true);
     } else {
         swapTurns();
-        setBoardHoverClass();
+        updateTurnIndicator();
     }
 }
 
 function placeMark(cell, player) {
     cell.classList.add(player);
     cell.textContent = player;
+    cell.removeEventListener("click", handleClick);
 }
 
 function swapTurns() {
     currentPlayer = currentPlayer === "X" ? "O" : "X";
-    messageElement.textContent = `Player ${currentPlayer}'s turn`;
 }
 
-function setBoardHoverClass() {
-    board.classList.remove("X");
-    board.classList.remove("O");
-    board.classList.add(currentPlayer);
+function updateTurnIndicator() {
+    turnIndicator.textContent = `Player ${currentPlayer}'s turn`;
 }
 
 function checkWin(player) {
@@ -66,19 +89,18 @@ function checkWin(player) {
 
 function endGame(draw) {
     if (draw) {
-        messageElement.textContent = "It's a Draw!";
+        turnIndicator.textContent = "It's a draw!";
     } else {
-        messageElement.textContent = `Player ${currentPlayer} Wins!`;
+        turnIndicator.textContent = `Player ${currentPlayer} Wins!`;
+        if (currentPlayer === "X") {
+            scoreX++;
+            scoreXElement.textContent = scoreX;
+        } else {
+            scoreO++;
+            scoreOElement.textContent = scoreO;
+        }
     }
-    cells.forEach(cell => {
-        cell.removeEventListener("click", handleClick);
-    });
-}
-
-function isDraw() {
-    return [...cells].every(cell => {
-        return cell.classList.contains("X") || cell.classList.contains("O");
-    });
+    cells.forEach(cell => cell.removeEventListener("click", handleClick));
 }
 
 restartButton.addEventListener("click", startGame);
